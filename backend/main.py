@@ -1,0 +1,28 @@
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from src.conversations import router as conversations_router
+from src.users import router as users_router
+from scripts.init_db import main as init_db_main
+import uvicorn
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("Checking and initializing database on startup...")
+    try:
+        init_db_main()
+    except Exception as e:
+        print(f"Failed to initialize database: {e}")
+    yield
+    print("Application shutdown")
+
+app = FastAPI(
+    title="AI Database Analyzer",
+    version="1.0.0",
+    lifespan=lifespan
+)
+
+app.include_router(conversations_router, prefix="/api/conversations")
+app.include_router(users_router, prefix="/api/users")
+
+if __name__ == "__main__":
+    uvicorn.run(app="main:app", host="0.0.0.0", port=8000, reload=True)
