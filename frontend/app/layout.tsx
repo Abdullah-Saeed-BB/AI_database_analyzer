@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/components/ui/Header";
+import { Header } from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "AI Database Analyzer",
@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="antialiased">
         <Header />
         <main className="min-h-[calc(100vh-64px)]">{children}</main>
       </body>

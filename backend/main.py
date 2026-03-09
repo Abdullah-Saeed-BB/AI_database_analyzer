@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from src.conversations import router as conversations_router
 from src.users import router as users_router
 from scripts.init_db import main as init_db_main
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 @asynccontextmanager
@@ -19,6 +20,14 @@ app = FastAPI(
     title="AI Database Analyzer",
     version="1.0.0",
     lifespan=lifespan
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(conversations_router, prefix="/api/conversations")
