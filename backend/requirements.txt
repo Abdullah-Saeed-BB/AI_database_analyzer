@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic[email]
+email-validator
+python-dotenv
+python-jose[cryptography]
+bcrypt
+ollama
+pandas
+psycopg2-binary
+faker
+python-multipart
+tabulate
