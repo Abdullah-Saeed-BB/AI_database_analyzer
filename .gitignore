@@ -5,3 +5,9 @@ systems.MD
 playground
 __pycache__
 TASKS.md
+.env
+.env.local
+.venv/
+.python-version
+*.py[cod]
+*.ipynb
