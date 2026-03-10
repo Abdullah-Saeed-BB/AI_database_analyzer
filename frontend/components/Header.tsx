@@ -21,17 +21,17 @@ export function Header() {
           {/* Logo Section */}
           <Link 
             href="/" 
-            className="flex items-center gap-3 hover:opacity-90 transition-opacity"
+            className="flex items-center hover:opacity-90 transition-opacity"
           >
             <Image 
-              src="/logo.png" 
+              src="/logo_simple.png" 
               alt="AI DB Analyzer Logo" 
-              width={32} 
-              height={32} 
+              width={60} 
+              height={60} 
               className="object-contain"
             />
             <span className="font-bold text-xl tracking-tight text-text-primary">
-              AI DB Analyzer
+              AI Database Analyzer
             </span>
           </Link>
 
@@ -51,7 +51,7 @@ export function Header() {
                 >
                   {link.icon === "robot" && (
 <svg 
-                      className="w-5 h-5" 
+                      className="w-6 h-6" 
                       viewBox="0 0 24 24" 
                       fill="none" 
                       stroke="currentColor" 
