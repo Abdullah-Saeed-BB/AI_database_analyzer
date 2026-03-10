@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Mail, Lock, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,18 +24,19 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/users/login", {
-        method: "POST",
+      const response = await fetch(`${API_URL}/api/users/login`, {
+        method: "POST", 
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: JSON.stringify({ email, password }),
+        body: new URLSearchParams({ username: email, password: password }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
         // 2. Handling specific error cases from server
+        console.log(response)
         if (response.status === 401 || response.status === 403) {
           setError("Invalid email or password. Please try again.");
         } else {
@@ -47,7 +49,7 @@ export default function LoginForm() {
       // 3. Save the JWT token
       if (data.access_token || data.token) {
         const token = data.access_token || data.token;
-        localStorage.setItem("jwt_token", token);
+        document.cookie = `jwt_token=${token}; path=/`;
         setSuccess(true);
         
         // Redirect after a short delay

@@ -15,7 +15,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased h-screen">
-        <Header />
         <main className="h-[calc(100vh-82px)]">{children}</main>
       </body>
     </html>
