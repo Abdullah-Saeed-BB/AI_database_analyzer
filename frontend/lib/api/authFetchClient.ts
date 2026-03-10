@@ -26,5 +26,5 @@ export async function authFetchClient(url: string, options: RequestInit = {}) {
         throw new Error("Unauthorized");
     }
 
-    return 
+    return res
 }

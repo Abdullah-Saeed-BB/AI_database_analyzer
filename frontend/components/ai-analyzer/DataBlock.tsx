@@ -1,13 +1,23 @@
 // components/chat/DataBlock.tsx
+"use client";
 import React, { useState } from 'react';
 import { Table as TableIcon, BarChart3 } from 'lucide-react';
 
 interface DataBlockProps {
-  data: any[];
+  data: { [key: string]: any[] };
+  metadata?: {
+        stats: object;
+        columns: string[];
+        datetime: string[];
+        numerical: string[];
+        categorical: string[];
+  };
 }
 
-export const DataBlock = ({ data }: DataBlockProps) => {
+export const DataBlock = ({ data, metadata }: DataBlockProps) => {
   const [view, setView] = useState<'table' | 'chart'>('table');
+  const columns = Object.keys(data);
+  const rowCount = data[columns[0]].length;
 
   return (
     <div className="mt-4 border border-gray-100 rounded-2xl overflow-hidden bg-white shadow-sm">
@@ -40,19 +50,29 @@ export const DataBlock = ({ data }: DataBlockProps) => {
           <table className="w-full text-sm text-left border-collapse">
             <thead>
               <tr className="border-b border-gray-100">
-                <th className="py-2 font-semibold text-[#1F2324]">Month</th>
-                <th className="py-2 font-semibold text-[#1F2324]">Revenue</th>
-                <th className="py-2 font-semibold text-[#1F2324]">Growth</th>
+                {Object.keys(data).map((key) => (
+                  <th key={key} className="py-2 font-semibold text-text-primary">{key}</th>
+                ))}
               </tr>
             </thead>
             <tbody className="text-[#5A5E63]">
-              {data.map((row, i) => (
+              {Array.from({ length: rowCount }).map((_, rowIndex) => (
+                <tr key={rowIndex} className="border-b border-gray-50 last:border-0">
+                  {columns.map((col) => (
+                    <td key={`${col}-${rowIndex}`} className="py-2">
+                      {/* Access the specific cell using the column name and row index */}
+                      {data[col][rowIndex]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              {/* {data..map((row, i) => (
                 <tr key={i} className="border-b border-gray-50 last:border-0">
                   <td className="py-2">{row.month}</td>
                   <td className="py-2">${row.revenue}</td>
                   <td className="py-2 text-green-600">{row.growth}</td>
                 </tr>
-              ))}
+              ))} */}
             </tbody>
           </table>
         ) : (

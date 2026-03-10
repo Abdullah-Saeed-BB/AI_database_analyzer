@@ -36,7 +36,6 @@ export default function LoginForm() {
 
       if (!response.ok) {
         // 2. Handling specific error cases from server
-        console.log(response)
         if (response.status === 401 || response.status === 403) {
           setError("Invalid email or password. Please try again.");
         } else {

@@ -3,6 +3,8 @@ import Hero from '@/components/ai-analyzer/Hero';
 import { useState, useRef, useEffect } from 'react';
 import { Bot, Loader2, MessageSquare, Send, User } from 'lucide-react';
 import { DataBlock } from '@/components/ai-analyzer/DataBlock';
+import { authFetchClient } from '@/lib/api/authFetchClient';
+import Conversation from '@/types/conversation';
 
 interface Suggestion {
   id: string;
@@ -12,7 +14,7 @@ interface Suggestion {
 interface Message {
   role: 'user' | 'assistant';
   content: string;
-  data?: any[];
+  data?: {[key: string]: any[]};
 }
 
 const SUGGESTIONS: Suggestion[] = [
@@ -27,6 +29,7 @@ const ChatPart = () => {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom on new message
@@ -37,26 +40,30 @@ const ChatPart = () => {
   const handleSend = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!input.trim() || isLoading) return;
-
+    
     const userMsg = input;
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
+      const res = await authFetchClient(`/api/conversations/`, {
+        method: 'POST',
+        body: JSON.stringify({ prompt: userMsg })
+      })
 
-    // --- Fake Server Request ---
-    setTimeout(() => {
-      const mockResponse: Message = {
-        role: 'assistant',
-        content: "I've analyzed the financial data you requested. Here is the breakdown of the quarterly performance showing a strong upward trend in revenue.",
-        data: [
-          { month: 'Jan', revenue: '45,000', growth: '+12%' },
-          { month: 'Feb', revenue: '52,000', growth: '+15%' },
-          { month: 'Mar', revenue: '61,000', growth: '+18%' },
-        ]
-      };
-      setMessages(prev => [...prev, mockResponse]);
+      if (!res.ok) {
+        throw new Error('Failed to fetch conversation');
+      }
+      const conv: Conversation = await res.json()
+
+      setMessages(prev => [...prev, { role: 'assistant', content: conv.text, data: conv.data }]);
+      
+    } catch (error) {
+      console.error(error);
+      setError('Failed to fetch conversation');
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
 
