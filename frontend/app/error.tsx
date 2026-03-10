@@ -16,11 +16,11 @@ export default function Error({
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
-      <h2 className="text-xl font-semibold text-[var(--color-text-primary)]">Something went wrong!</h2>
-      <p className="text-[var(--color-text-secondary)]">{error.message || "An unexpected request error occurred."}</p>
+      <h2 className="text-xl font-semibold text-text-primary">Something went wrong!</h2>
+      <p className="text-text-secondary">{error.message || "An unexpected request error occurred."}</p>
       <button
         onClick={() => reset()}
-        className="px-4 py-2 bg-[var(--color-bg-active)] text-[var(--color-white)] rounded-md hover:opacity-90 transition-opacity"
+        className="px-4 py-2 bg-bg-active text-white rounded-md hover:opacity-90 transition-opacity"
       >
         Try again
       </button>

@@ -1,9 +1,15 @@
-import { ChatContainer } from "@/components/ai-analyzer/ChatContainer";
+import RecentConvs from '@/components/ai-analyzer/RecentConvs';
 
-export default function AIAnalyzerPage() {
+import ChatPart from '@/components/ai-analyzer/ChatPart';
+
+export default function AIChatPage() {
+
   return (
-    <div className="flex flex-col h-[calc(100vh-80px)] w-full">
-      <ChatContainer />
+    <div className="flex h-full w-full font-sans text-text-primary">
+      <RecentConvs/>
+      <main className="flex-1 flex flex-col relative overflow-hidden p-5">
+        <ChatPart/>
+      </main>
     </div>
   );
 }
