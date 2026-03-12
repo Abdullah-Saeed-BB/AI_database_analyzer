@@ -37,6 +37,8 @@ def generate_conversation_from_prompt(
 
             db.add(new_conv)
             db.commit()
+            db.refresh(new_conv)
+            result["id"] = new_conv.id
         except Exception as e:
             logger.error(f"Error saving conversation: {e}")
             result["error"] = "Error occures while saving conversation."

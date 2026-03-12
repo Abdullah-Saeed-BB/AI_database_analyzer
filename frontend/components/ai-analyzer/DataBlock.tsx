@@ -3,7 +3,9 @@
 import { useState } from 'react';
 import { Table as TableIcon, BarChart3, Code } from 'lucide-react';
 import { metadata } from '@/types/conversation';
-import { SmartBarChart, SmartLineChart, SmartScatterChart } from './Charts';
+import { SmartBarChart, SmartLineChart, SmartPieChart, SmartScatterChart } from './Charts';
+import formatSQL from '@/lib/formatSQL';
+import getRandomElements from '@/lib/getRandElements';
 
 interface DataBlockProps {
   data: { [key: string]: any[] };
@@ -11,45 +13,41 @@ interface DataBlockProps {
   sql_query: string;
 }
 
-function formatSQL(query: string): string {
-  // Define the keywords we want to move to a new line
-  const keywords = [
-    "SELECT",
-    "FROM",
-    "WHERE",
-    "GROUP BY",
-    "HAVING",
-    "ORDER BY",
-    "LIMIT",
-    "JOIN",
-    "LEFT JOIN",
-    "RIGHT JOIN",
-    "INNER JOIN",
-    "OUTER JOIN",
-    "UNION",
-    "VALUES",
-    "SET"
-  ];
-
-  // Create a regex pattern: \b(KEYWORD1|KEYWORD2)\b
-  // \b ensures we match whole words only
-  const pattern = new RegExp(`\\b(${keywords.join("|")})\\b`, "gi");
-
-  return query
-    .replace(/\s+/g, " ")       // Collapse multiple spaces/newlines into one
-    .replace(pattern, "\n$1")   // Add newline before the keyword
-    .trim();                    // Remove leading/trailing whitespace
-}
-
-
 export const DataBlock = ({ data, metadata, sql_query }: DataBlockProps) => {
   const [view, setView] = useState<'table' | 'chart' | 'sql'>('table');
   const columns = Object.keys(data);
   const rowCount = data[columns[0]].length;
 
+  let charts: React.ReactNode[] = [];
+
+  metadata.categorical.forEach((col) => {
+    if (!col.includes("id")) {
+      metadata.numerical.forEach((numCol) => {
+        let sum = data[numCol].reduce((a, b) => a + b, 0);
+        if (Math.round(sum) == 100) {
+          charts.push(<SmartPieChart data={getRandomElements(data, 20)} columns={[col, numCol]}/>)
+        } else {
+          charts.push(<SmartBarChart data={getRandomElements(data, 20)} columns={[col, numCol]}/>)
+        }
+      })
+    }
+  })
+
+  let existChart: string[] = []  
+  metadata.numerical.forEach((numCol) => {
+    metadata.datetime.forEach((dateCol) => {
+      charts.push(<SmartLineChart data={getRandomElements(data, 100)} columns={[dateCol, numCol]}/>)
+    })
+    metadata.numerical.forEach((numCol2) => {
+      if (numCol !== numCol2 && !existChart.includes(numCol2)) {
+        charts.push(<SmartScatterChart data={getRandomElements(data, 100)} columns={[numCol, numCol2]}/>)
+        existChart.push(numCol)
+      }
+    })
+  })
+
   return (
     <div className="mt-4 border border-gray-100 rounded-2xl overflow-hidden bg-white shadow-sm">
-      {/* Toggle Header */}
       <div className="flex items-center justify-between p-3 bg-gray-50/50 border-b border-gray-100">
         <span className="text-xs font-semibold text-text-secondary uppercase px-2">Data Insights</span>
         <div className="flex bg-gray-200/50 p-1 rounded-xl">
@@ -80,7 +78,6 @@ export const DataBlock = ({ data, metadata, sql_query }: DataBlockProps) => {
         </div>
       </div>
 
-      {/* Content Area */}
       <div className="p-4 overflow-x-auto">
         {view === 'table' ? (
           <table className="w-full text-sm text-left border-collapse">
@@ -105,17 +102,20 @@ export const DataBlock = ({ data, metadata, sql_query }: DataBlockProps) => {
             </tbody>
           </table>
         ) : view === 'chart' ? (
-          <div className="flex items-center justify-center ">
-            {/* {JSON.stringify(metadata)} */}
-            {/* <SmartBarChart data={data} columns={["rate", "stock"]}/> */}
-            {/* <SmartScatterChart data={data} columns={["rate", "stock"]}/> */}
-            <SmartLineChart data={data} columns={["sale_date", "total_sales_amount"]}/>
+          <div className="flex items-center ">
+            {
+              charts.map((chart, index) => (
+                <div key={index} className="m-3 mb-4">
+                  {chart}
+                </div>
+              ))
+            }
           </div>
         ) : (
           <div className="bg-gray-700 text-white shadow-lg px-6 py-4 rounded-lg">
             <pre>
-              {/* {formatSQL(sql_query)} */}
-              {JSON.stringify(metadata, null, 4)}
+              {formatSQL(sql_query)}
+              {/* {JSON.stringify(metadata, null, 4)} */}
             </pre>
           </div>
         )}

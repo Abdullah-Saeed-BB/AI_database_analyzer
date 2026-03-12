@@ -81,6 +81,7 @@ const ChartWrapper = ({ title, children }: { title: string; children: React.Reac
       border: `1px solid ${CHART_STYLE.border}`,
       borderRadius: "12px",
       padding: "24px",
+      minWidth: "500px",
       // fontFamily: CHART_STYLE.fontFamily,
     }}
     className="w-full"
