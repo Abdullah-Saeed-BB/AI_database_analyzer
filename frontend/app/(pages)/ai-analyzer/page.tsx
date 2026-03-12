@@ -1,33 +1,35 @@
 "use client"
 import Hero from '@/components/ai-analyzer/Hero';
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Loader2, MessageSquare, Send, User } from 'lucide-react';
-import { DataBlock } from '@/components/ai-analyzer/DataBlock';
+import { Loader2, MessageSquare, Send } from 'lucide-react';
 import { authFetchClient } from '@/lib/api/authFetchClient';
-import Conversation from '@/types/conversation';
+import Conversation, { metadata } from '@/types/conversation';
+import Message from '@/components/ai-analyzer/Message';
 
 interface Suggestion {
   id: string;
   label: string;
 }
 
-interface Message {
+interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   data?: {[key: string]: any[]};
+  metadata?: metadata;
+  isError?: boolean;
 }
 
 const SUGGESTIONS: Suggestion[] = [
-  { id: '1', label: "Analyze last month's sales data" },
+  { id: '1', label: "What is the most selled product in Saudi Arabia?" },
   { id: '2', label: "Create a growth projection chart" },
-  { id: '3', label: "Summarize the quarterly report" },
-  { id: '4', label: "Compare marketing spend vs ROI" },
+  { id: '3', label: "Which products are running low on stock (below 20 units)?" },
+  { id: '4', label: "Can the same product have different unit prices across purchases?" },
   { id: '5', label: "Predict next week's inventory needs" },
 ];
 
 const ChatPart = () => {
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -56,11 +58,17 @@ const ChatPart = () => {
       }
       const conv: Conversation = await res.json()
 
-      setMessages(prev => [...prev, { role: 'assistant', content: conv.text, data: conv.data }]);
+      const newMesg: ChatMessage = { role: 'assistant', content: conv.text, data: conv.data, metadata: conv.data_metadata }
+      setMessages(prev => [...prev, newMesg]);
+
+      if (conv.error) {
+        const errorMesg: ChatMessage = { role: 'assistant', content: conv.error, isError: true }
+        setMessages(prev => [...prev, errorMesg]);
+      }
       
     } catch (error) {
       console.error(error);
-      setError('Failed to fetch conversation');
+      setError('Sorry. Error occures while generating the response');
     } finally {
       setIsLoading(false);
     }
@@ -109,28 +117,7 @@ const ChatPart = () => {
         ) : (
           <div className='p-5'>
             {messages.map((msg, idx) => (
-              <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                {msg.role === 'assistant' && (
-                  <div className="w-8 h-8 rounded-full bg-[#2772CE]/10 flex items-center justify-center shrink-0">
-                    <Bot size={18} className="text-[#2772CE]" />
-                  </div>
-                )}
-                <div className={`max-w-[85%] ${msg.role === 'user' ? 'order-1' : 'order-2'}`}>
-                  <div className={`p-4 rounded-2xl ${
-                    msg.role === 'user' 
-                      ? 'bg-gray-100 text-[#1F2324]' 
-                      : 'bg-white border border-gray-100 shadow-sm'
-                  }`}>
-                    <p className="text-[15px] leading-relaxed">{msg.content}</p>
-                    {msg.data && <DataBlock data={msg.data} />}
-                  </div>
-                </div>
-                {msg.role === 'user' && (
-                  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center shrink-0 order-2">
-                    <User size={18} className="text-[#5A5E63]" />
-                  </div>
-                )}
-              </div>
+              <Message key={idx} role={msg.role} content={msg.content} data={msg.data} metadata={msg.metadata} isError={msg.isError}/>
             ))}
             {isLoading && (
               <div className="flex gap-4 items-center text-[#5A5E63] animate-pulse">
@@ -138,6 +125,10 @@ const ChatPart = () => {
                 <span className="text-sm">Thinking...</span>
               </div>
             )}
+            {error && (
+              <Message role='assistant' content={error} isError={true}/>
+            )}
+            <div ref={scrollRef} />
           </div>
         )}
     </>

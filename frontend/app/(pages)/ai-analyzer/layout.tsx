@@ -3,7 +3,7 @@ import React from 'react'
 
 const AIAnalyzerLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex h-full w-full text-text-primary">
+    <div className="flex min-h-full w-full text-text-primary">
         <RecentConvs/>
         <main className="flex-1 flex flex-col relative overflow-hidden p-5">
             {children}

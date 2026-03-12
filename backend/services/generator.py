@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from ollama import Client
 import pandas as pd
 import psycopg2 
+import datetime
 import time
 import re
 import os
@@ -45,7 +46,7 @@ class Generator:
                 break
             else:
                 if i >= 3:
-                    raise Exception(f"There is nothing we can do... ({df})")
+                    raise Exception(f"Error happen while executing the SQL query. Please try again.")
                 print("SQL RAISE ERROR:", df)
                 print("GENERATE ANOTHER SQL... ", end="")
                 sql_query = self.generate_sql(sql_query, error=df)
@@ -69,6 +70,14 @@ class Generator:
 
         metadata = self.generate_metadata(df)
 
+        for obj_col in df.columns:
+            try:
+                if type(df.loc[0, obj_col]) in (datetime.date, datetime.datetime):
+                    df[obj_col] = df[obj_col].apply(lambda dt: dt.isoformat())
+                else:
+                    date_datetime = pd.to_numeric(df[obj_col])
+                    df[obj_col] = date_datetime.dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+            except: pass
         data = df.to_dict(orient="list")
 
         return {
@@ -98,8 +107,15 @@ class Generator:
         #     options={"temperature": 0}
         # )
         # text = response.message.content
-        time.sleep(2)
-        text = "SELECT EXTRACT(MONTH FROM orders.invoice_date::date) AS month, COUNT(*) AS order_count FROM orders WHERE EXTRACT(YEAR FROM orders.invoice_date::date) = 2010 GROUP BY month ORDER BY order_count DESC LIMIT 1;"
+        time.sleep(1)
+        text = """ 
+SELECT 
+    country,
+    COUNT(id) as order_count,
+    ROUND(100.0 * COUNT(id) / SUM(COUNT(id)) OVER (), 2) as percentage_of_total_orders
+FROM orders
+GROUP BY country
+ORDER BY order_count DESC;"""
         sql_query = self.extract_sql_from_text(text)
 
         return sql_query
