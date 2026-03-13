@@ -17,6 +17,7 @@ from faker import Faker
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 import sys
+from datetime import datetime
 from dotenv import load_dotenv
 
 # Ensure python can find project module if run from the script directory
@@ -102,6 +103,16 @@ def main():
     # Drop StockCode column
     if "StockCode" in df.columns:
         df.drop(columns=["StockCode"], inplace=True)
+        
+    # Make the dates to close to curr date
+    df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'])
+
+    now = datetime.now()
+    recent_date = df['InvoiceDate'].max()
+    gap = now - recent_date
+    df['InvoiceDate'] = df['InvoiceDate'] + gap
+
+    df['InvoiceDate'] = df['InvoiceDate'].dt.strftime('%Y-%m-%d %H:%M')
         
     print(f"  After cleaning: {len(df):,} rows, columns: {list(df.columns)}")
 

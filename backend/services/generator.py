@@ -182,6 +182,7 @@ ORDER BY order_count DESC;"""
 
             return text_res
         except:
+            print("ERROR GENERATING TEXT RESPONSE:", e)
             return "Something went wrong while generating text response. Sorry :("
 
     def generate_metadata(self, df: pd.DataFrame) -> dict:

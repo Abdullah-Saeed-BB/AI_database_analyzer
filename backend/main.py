@@ -12,7 +12,7 @@ async def lifespan(app: FastAPI):
     try:
         init_db_main()
     except Exception as e:
-        print(f"Failed to initialize database: {e}")
+        print(f"Failed to initialize database. Error message: {e}")
     yield
     print("Application shutdown")
 

@@ -62,7 +62,7 @@ const RecentConvs = async () => {
             </Bar>
         )
     } catch (e) {
-        console.log("FROM THE RecebtConvs COMPONENT: ", e);
+        console.log("FROM THE RecentConvs COMPONENT: ", e);
         return <Bar><h4 className='text-red-800 italic bg-red-200 rounded px-4 py-2'>Error occurs while fetching your conversations</h4></Bar>
     }
 }

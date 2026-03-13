@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from src.auth import get_current_user
 from models.models import User
-from services.generator import Generator
+from services._generator_api import Generator
 from pydantic import BaseModel
 import logging
 

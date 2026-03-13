@@ -11,3 +11,4 @@ TASKS.md
 .python-version
 *.py[cod]
 *.ipynb
+_generator_api.py

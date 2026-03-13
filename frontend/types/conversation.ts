@@ -8,7 +8,8 @@ export default interface Conversation {
     prompt: string;
     text: string;
     sql: string;
-    sql_generation_time: string;
+    sql_generation_time: number;
+    text_generation_time: number;
     created_at: string;
     error?: string;
 }

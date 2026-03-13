@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { User2Icon } from "lucide-react";
 
 export function Header() {
   const pathname = usePathname();
@@ -15,7 +16,7 @@ export function Header() {
 
   return (
     <header className="bg-bg-light border-b border-(--color-border) shadow-sm sticky top-0 z-50">
-      <div className="max-w-7xl  px-6 h-20 flex items-center justify-between">
+      <div className="px-6 h-20 flex items-center justify-between">
         
         <div className="flex items-center gap-12">
           {/* Logo Section */}
@@ -73,8 +74,10 @@ export function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center">
-           {/* Add user settings or profile icons here if needed */}
+        <div className="flex items-center pr-6">
+            <Link href="/profile" className="shadow-sm border p-3 rounded-full transition-all duration-200 bg-gray-200 border-gray-200 text-text-secondary hover:bg-blue-100 hover:border-blue-100 hover:text-text-active">
+              <User2Icon size={26}/>
+            </Link>
         </div>
 
       </div>

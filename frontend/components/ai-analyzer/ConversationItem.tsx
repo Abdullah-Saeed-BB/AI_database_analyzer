@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { MoreHorizontal, Pencil, Archive, Trash2, Clock, Check, X } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { authFetchClient } from '@/lib/api/authFetchClient'
 
 interface ConversationItemProps {
@@ -18,6 +18,9 @@ export default function ConversationItem({ id, title: initialTitle }: Conversati
     const [editValue, setEditValue] = useState(initialTitle)
     const menuRef = useRef<HTMLDivElement>(null)
     const router = useRouter()
+    const params = useParams()
+    const isActive = params?.id === id
+
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -112,7 +115,12 @@ export default function ConversationItem({ id, title: initialTitle }: Conversati
                 <>
                     <Link
                         href={`/ai-analyzer/${id}`}
-                        className="flex-1 flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl text-text-secondary hover:bg-blue-100 hover:text-blue-600 transition-colors text-left truncate"
+                        className={`flex-1 flex items-center gap-3 px-3 py-2.5 text-sm transition-colors rounded-2xl text-left truncate ${
+                            isActive 
+                            ? "bg-blue-200 text-text-active" 
+                            : "text-text-secondary hover:bg-blue-100 hover:text-blue-600"
+                        }`}
+
                     >
                         <Clock size={16} className="shrink-0" />
                         <span className="truncate">{title}</span>
