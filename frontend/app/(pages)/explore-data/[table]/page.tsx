@@ -81,7 +81,7 @@ export default function DataDetails({ params }: PageProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="px-4 py-2 bg-white rounded-2xl border border-border shadow-sm flex items-center gap-4">
+          <div className="px-4 py-2 bg-white rounded-2xl border border-gray-200 shadow-sm flex items-center gap-4">
             <div className="flex flex-col">
               <span className="text-[10px] font-bold text-text-secondary uppercase tracking-tight">Total Records</span>
               <span className="text-sm font-bold text-text-primary">{total.toLocaleString()}</span>
@@ -94,7 +94,7 @@ export default function DataDetails({ params }: PageProps) {
           </div>
           <button 
             onClick={() => fetchData(0, true)}
-            className="p-3 bg-white hover:bg-bg-light border border-border rounded-2xl shadow-sm transition-all hover:shadow-md text-text-secondary hover:text-text-active"
+            className="p-3 bg-blue-100 hover:bg-blue-300 hover:border-blue-400 border border-blue-300 rounded-full shadow-sm transition-all hover:shadow-md text-text-active hover:text-text-secondary"
             title="Refresh Table"
           >
             <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin text-text-active' : ''}`} />
@@ -120,22 +120,22 @@ export default function DataDetails({ params }: PageProps) {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden">
+          <div className="bg-white rounded-3xl border border-gray-500 shadow-sm overflow-hidden">
             <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-bg-light border-b border-border">
+                  <tr className="bg-bg-light border-b border-gray-500">
                     {columns.map((col) => (
                       <th 
                         key={col} 
-                        className="px-6 py-4 text-[11px] font-extrabold text-text-secondary uppercase tracking-widest whitespace-nowrap"
+                        className="px-6 py-4 text-[11px] text-text-secondary uppercase tracking-widest whitespace-nowrap"
                       >
                         {col.replace(/_/g, ' ')}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border">
+                <tbody className="divide-y divide-gray-300">
                   {data.map((row, i) => (
                     <tr 
                       key={i} 
@@ -168,7 +168,7 @@ export default function DataDetails({ params }: PageProps) {
               <button
                 onClick={() => fetchData(offset)}
                 disabled={loadingMore}
-                className="group flex items-center gap-3 px-8 py-4 bg-white hover:bg-text-active text-text-primary hover:text-white border-2 border-border hover:border-text-active rounded-2xl font-bold transition-all shadow-sm hover:shadow-xl hover:-translate-y-1 disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none"
+                className="group flex items-center gap-3 px-8 py-4 bg-white hover:bg-text-active text-text-primary hover:text-white border border-gray-400 hover:border-text-active rounded-2xl font-bold transition-all shadow-sm hover:shadow-xl disabled:opacity-50 disabled:shadow-none"
               >
                 {loadingMore ? (
                   <>
@@ -177,7 +177,7 @@ export default function DataDetails({ params }: PageProps) {
                   </>
                 ) : (
                   <>
-                    <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+                    <ChevronDown className="w-5 h-5" />
                     <span>Load More Records</span>
                     <span className="text-xs opacity-60 ml-2">
                        ({total - data.length} remaining)
