@@ -26,6 +26,8 @@ from src.auth import (
 )
 from schemas.user import SignupRequest, TokenResponse, UserResponse
 
+from datetime import timezone, datetime
+
 router = APIRouter()
 
 VALID_ROLES = {"employee", "manager", "admin"}
@@ -108,6 +110,11 @@ def login(payload: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
     token = create_access_token(
         data={"sub": user.email, "role": user.role}
     )
+
+    user.last_login_at = datetime.now(timezone.utc)
+    db.add(user)
+    db.commit()
+
     return TokenResponse(access_token=token)
 
 
