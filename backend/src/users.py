@@ -165,3 +165,41 @@ def get_all_users(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error fetching users",
         )
+
+
+# ──────────────────────────────────────────────
+# DELETE /api/users/{user_id}   (admin only)
+# ──────────────────────────────────────────────
+@router.delete(
+    "/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete a user (admin only)",
+)
+def delete_user(
+    user_id: str,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(require_role("admin")),
+):
+    """
+    Deletes a user by ID. **Requires the `admin` role.**
+    Cannot delete yourself.
+    """
+    if str(current_admin.id) == user_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot delete your own admin account",
+        )
+        
+    user_to_delete = db.execute(
+        select(User).where(User.id == user_id)
+    ).scalar_one_or_none()
+    
+    if not user_to_delete:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+        
+    db.delete(user_to_delete)
+    db.commit()
+    return None

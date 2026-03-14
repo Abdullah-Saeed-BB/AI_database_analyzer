@@ -4,6 +4,11 @@ import psycopg2
 from urllib.parse import urlparse
 from dotenv import load_dotenv
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from models.models import User
+from db.session import engine
+from src.auth import hash_password
 
 # Ensure python can find project module if run from the script directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -55,6 +60,24 @@ def create_database_if_not_exists():
         else:
             print(f"Database '{target_db}' already exists.")
             created = False
+
+        with Session(engine) as session:
+            query = select(User).where(User.email == "admin@ad.min")
+            admin_user = session.execute(query).scalar()
+            if not admin_user:
+                print("Admin user not found. Creating...")
+                new_user = User(
+                    email="admin@ad.min",
+                    password_hash=hash_password("admin"),
+                    first_name="Admin",
+                    last_name="Admin",
+                    role="admin",
+                )
+                session.add(new_user)
+                session.commit()
+                print("Admin user created successfully.")
+            else:
+                print("Admin user already exists.")
 
         cursor.close()
         conn.close()

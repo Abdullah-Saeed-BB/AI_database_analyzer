@@ -79,7 +79,7 @@ export function Header() {
         <div className="flex items-center gap-12">
           {/* Logo Section */}
           <Link 
-            href="/" 
+            href="/dashboard" 
             className="flex items-center hover:opacity-90 transition-opacity"
           >
             <Image 

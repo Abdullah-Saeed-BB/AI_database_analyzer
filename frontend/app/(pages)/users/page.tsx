@@ -1,8 +1,10 @@
 import { authFetch } from "@/lib/api/authFetch";
 import { notFound, redirect } from "next/navigation";
 import PageDescription from "@/components/ui/PageDescription";
-import { Users, Mail, Calendar, Search } from "lucide-react";
+import { Users, Mail, Calendar } from "lucide-react";
 import User from "@/types/user";
+import Link from "next/link";
+import DeleteUserButton from "./DeleteUserButton";
 
 async function getCurrentUser(): Promise<User | null> {
   try {
@@ -83,8 +85,11 @@ export default async function UsersPage() {
         
         <div className="px-6 py-2 bg-white rounded-2xl border border-gray-200 shadow-sm">
           <div className="flex items-center gap-5 w-max">
-            <span className="text-sm text-text-secondary">TOTAL USERS:</span>
-            <span className="text-lg text-text-primary">{users.length}</span>
+            <div className="flex flex-col items-center">
+              <span className="text-sm text-text-secondary">TOTAL USERS:</span>
+              <span className="text-lg text-text-primary">{users.length}</span>
+            </div>
+            <Link href="/users/add" className="ml-5 px-4 py-2 bg-blue-500 hover:bg-blue-600 transition-colors duration-200 text-white rounded-4xl">Add user</Link>
           </div>
         </div>
       </div>
@@ -99,6 +104,7 @@ export default async function UsersPage() {
                 <th className="px-8 py-5 text-xs font-bold text-gray-500 uppercase tracking-widest">Role</th>
                 <th className="px-8 py-5 text-xs font-bold text-gray-500 uppercase tracking-widest">Last Login</th>
                 <th className="px-8 py-5 text-xs font-bold text-gray-500 uppercase tracking-widest">ID</th>
+                <th className="px-8 py-5 text-xs font-bold text-gray-500 uppercase tracking-widest text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -141,6 +147,9 @@ export default async function UsersPage() {
                     <code className="text-[10px] bg-gray-50 px-2 py-1 rounded-lg border border-gray-200 text-gray-400 font-mono">
                       {user.id.substring(0, 8)}...
                     </code>
+                  </td>
+                  <td className="px-8 py-5 flex items-center justify-center">
+                    <DeleteUserButton userId={user.id} isCurrentUser={user.id === currentUser.id} />
                   </td>
                 </tr>
               ))}
