@@ -25,17 +25,13 @@ class Generator:
         self.text_model = text_model
         self.text_model_options = text_model_options
 
-        # self.conn = sqlite3.connect("./data/store.db")
-        # self.conn.execute("PRAGMA full_column_names = ON")
         self.client = Client(host="http://localhost:11434")        
 
     def generate(self, prompt: str, conn: Session) -> str:
         errors = []
 
-        print("GENERATE SQL:")
         sql_start_time = time.time()
         sql_query = self.generate_sql(prompt)
-        print("\t", sql_query)
 
         i = 0
         while True:
@@ -47,10 +43,7 @@ class Generator:
             else:
                 if i >= 3:
                     raise Exception(f"Error happen while executing the SQL query. Please try again.")
-                print("SQL RAISE ERROR:", df)
-                print("GENERATE ANOTHER SQL... ", end="")
                 sql_query = self.generate_sql(sql_query, error=df)
-                print(sql_query)
         sql_generation_time = time.time() - sql_start_time
 
         text_start_time = time.time()
@@ -64,7 +57,6 @@ class Generator:
         ) 
         text_prompt = f"PROMPT: {prompt}\n\nDATA: ({data_note})\n{markdown}"
 
-        print("GENERATE TEXT RESPONSE. USING THIS PROMPT:", text_prompt, sep="\n")
         response = self.generate_response(text_prompt)
         text_generation_time = time.time() - text_start_time
 
@@ -97,25 +89,16 @@ class Generator:
         else:
             instrc = self.sql_instruction
 
-        # response = self.client.chat(
-        #     model=self.sql_model,
-        #     messages=[{
-        #         "role": "system", "content": instrc
-        #     }, {
-        #         "role": "user", "content": prompt
-        #     }],
-        #     options={"temperature": 0}
-        # )
-        # text = response.message.content
-        time.sleep(1)
-        text = """ 
-SELECT 
-    country,
-    COUNT(id) as order_count,
-    ROUND(100.0 * COUNT(id) / SUM(COUNT(id)) OVER (), 2) as percentage_of_total_orders
-FROM orders
-GROUP BY country
-ORDER BY order_count DESC;"""
+        response = self.client.chat(
+            model=self.sql_model,
+            messages=[{
+                "role": "system", "content": instrc
+            }, {
+                "role": "user", "content": prompt
+            }],
+            options={"temperature": 0}
+        )
+        text = response.message.content
         sql_query = self.extract_sql_from_text(text)
 
         return sql_query
@@ -158,14 +141,17 @@ ORDER BY order_count DESC;"""
         return sql_cleaned
 
     def execute_sql(self, sql: str, conn: Session) -> pd.DataFrame:
-        try:
-            df = pd.read_sql(sql, conn)
-            df.rename(inplace=True, columns=dict(map(
-                lambda col: (col, col.replace(".", "_")), df.columns
-            )))
-            return df
-        except Exception as e:
-            return e
+        if sql.lower().strip().startswith("select"):
+            try:
+                df = pd.read_sql(sql, conn)
+                df.rename(inplace=True, columns=dict(map(
+                    lambda col: (col, col.replace(".", "_")), df.columns
+                )))
+                return df
+            except Exception as e:
+                return e
+        else:
+            raise Exception("This SQL query doesn't execute SELECT statment query")
 
     def generate_response(self, prompt: str) -> str:
         try:

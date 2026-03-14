@@ -147,10 +147,7 @@ export default function LoginForm() {
 
         <div className="text-center pt-2">
           <p className="text-sm text-text-secondary">
-            Don't have an account?{" "}
-            <a href="#" className="text-text-active font-semibold hover:underline">
-              Contact Admin
-            </a>
+            Use <span className="text-text-active font-semibold">admin@ad.min</span> email and <span className="text-text-active font-semibold">admin</span> password to login.
           </p>
         </div>
       </form>
