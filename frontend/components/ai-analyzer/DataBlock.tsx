@@ -21,25 +21,27 @@ export const DataBlock = ({ data, metadata, sql_query }: DataBlockProps) => {
   let charts: React.ReactNode[] = [];
 
   metadata.categorical.forEach((col) => {
-    if (!col.includes("id")) {
-      metadata.numerical.forEach((numCol) => {
-        let sum = data[numCol].reduce((a, b) => a + b, 0);
-        if (Math.round(sum) == 100) {
-          charts.push(<SmartPieChart data={getRandomElements(data, 20)} columns={[col, numCol]}/>)
-        } else {
-          charts.push(<SmartBarChart data={getRandomElements(data, 20)} columns={[col, numCol]}/>)
+    metadata.numerical.forEach((numCol) => {
+        if (!col.includes("id") && !numCol.includes("id")) {
+          let sum = data[numCol].reduce((a, b) => a + b, 0);
+          if (Math.round(sum) == 100) {
+            charts.push(<SmartPieChart data={getRandomElements(data, 20)} columns={[col, numCol]}/>)
+          } else {
+            charts.push(<SmartBarChart data={getRandomElements(data, 20)} columns={[col, numCol]}/>)
+          }
         }
       })
-    }
   })
 
   let existChart: string[] = []  
   metadata.numerical.forEach((numCol) => {
     metadata.datetime.forEach((dateCol) => {
-      charts.push(<SmartLineChart data={getRandomElements(data, 100)} columns={[dateCol, numCol]}/>)
+      if (!dateCol.includes("id") && !numCol.includes("id")) {
+        charts.push(<SmartLineChart data={getRandomElements(data, 100)} columns={[dateCol, numCol]}/>)
+      }
     })
     metadata.numerical.forEach((numCol2) => {
-      if (numCol !== numCol2 && !existChart.includes(numCol2)) {
+      if (numCol !== numCol2 && !existChart.includes(numCol2) && !numCol2.includes("id")) {
         charts.push(<SmartScatterChart data={getRandomElements(data, 100)} columns={[numCol, numCol2]}/>)
         existChart.push(numCol)
       }
