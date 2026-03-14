@@ -5,20 +5,22 @@ This branch is the local version which run the LLMs locally. If you want to use 
 
 ## Tools
 
-### Backend
-- **Framework**: FastAPI
-- **Database ORM**: SQLAlchemy
-- **Database Driver**: psycopg2 (PostgreSQL)
-- **Data Manipulation**: Pandas
-- **AI/LLM Utilities**: Ollama (for local AI)
-- **Authentication**: JWT (python-jose), bcrypt
-- **Data Validation**: Pydantic
+### 🛠️ Tech Stack
 
-### Frontend
-- **Framework**: Next.js 16
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
-- **Data Visualization**: Recharts
+#### Backend
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![Ollama](https://img.shields.io/badge/Ollama-000000?style=for-the-badge&logo=ollama&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
+![Pydantic](https://img.shields.io/badge/Pydantic-E92063?style=for-the-badge&logo=pydantic&logoColor=white)
+
+#### Frontend
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Lucide React](https://img.shields.io/badge/Lucide_React-FDE047?style=for-the-badge&logo=lucide&logoColor=black)
+![Recharts](https://img.shields.io/badge/Recharts-22B5BF?style=for-the-badge&logo=recharts&logoColor=white)
 
 ## Project Structure
 
