@@ -150,7 +150,15 @@ def get_all_users(
     Returns all registered users. **Requires the `admin` role.**
     """
     try:
-        result = db.execute(select(User)).scalars().all()
+        query = select(
+            User.id,
+            User.email,
+            User.first_name,
+            User.last_name,
+            User.role,
+            User.last_login_at,
+        )
+        result = db.execute(query).mappings().all()
         return result
     except Exception as e:
         raise HTTPException(

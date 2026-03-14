@@ -55,7 +55,7 @@ function StatCard({
                  hover:shadow-md transition-shadow duration-200"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-2xl flex-shrink-0">
+      <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-2xl shrink-0">
         {icon}
       </div>
       <div className="min-w-0">
@@ -102,7 +102,7 @@ function TopCustomersCard({
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-gray-800 truncate">{c.name}</p>
               </div>
-              <span className="text-blue-600 font-bold text-sm flex-shrink-0">
+              <span className="text-blue-600 font-bold text-sm shrink-0">
                 {formatCurrency(c.total)}
               </span>
             </li>

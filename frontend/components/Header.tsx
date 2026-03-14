@@ -26,6 +26,22 @@ export function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Fetch user data on mount to handle role-based UI
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const res = await authFetchClient("/api/users/me");
+        if (res.ok) {
+          const data = await res.json();
+          setUserData(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data on mount", error);
+      }
+    }
+    fetchUser();
+  }, []);
+
   const handleProfileClick = async () => {
     if (!showProfile) {
       setShowProfile(true);
@@ -53,6 +69,7 @@ export function Header() {
     { name: "Dashboard", href: "/dashboard" },
     { name: "Explore Data", href: "/explore-data" },
     { name: "AI Analyzer", href: "/ai-analyzer", icon: "robot" },
+    ...(userData?.role === "admin" ? [{ name: "Users", href: "/users" }] : []),
   ];
 
   return (

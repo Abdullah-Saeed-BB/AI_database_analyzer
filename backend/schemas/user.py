@@ -3,6 +3,7 @@ Pydantic request / response schemas for authentication routes.
 """
 
 import uuid
+from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
 
@@ -33,5 +34,6 @@ class UserResponse(BaseModel):
     first_name: str
     last_name: str
     role: str
+    last_login_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
