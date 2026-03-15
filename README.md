@@ -72,10 +72,15 @@ This project uses **PostgreSQL** database. Make sure you have PostgreSQL running
    ```bash
    cd backend
    python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
-   - Create a `.env` file in the `backend` folder that accurately defines your PostgreSQL `DATABASE_URL` and backend secrets. No external AI keys are necessary here.
+   - Create a `.env` file and paste the following, just update the `DATABASE_URL` with PostgreSQL database.
+     ```.env
+     DATABASE_URL="postgresql://[username]:[password]@localhost:5432/[dbname]"
+     JWT_SECRET_KEY="YOUR_JWT_SECRET_KEY"
+     JWT_ALGORITHM="HS256"
+     JWT_ACCESS_TOKEN_EXPIRE_MINUTES = 1440
+     ```
    - Run the backend Application:
      ```bash
      uvicorn main:app --reload
