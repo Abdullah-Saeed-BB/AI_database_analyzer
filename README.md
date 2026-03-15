@@ -56,6 +56,7 @@ This project uses **PostgreSQL** database. Make sure you have PostgreSQL running
 1. **Clone the project and checkout to the API version branch:**
    ```bash
    git clone https://github.com/Abdullah-Saeed-BB/AI_database_analyzer.git
+   cd AI_database_analyzer
    git checkout API-version
    ```
 
@@ -96,3 +97,4 @@ This project uses **PostgreSQL** database. Make sure you have PostgreSQL running
       npm install
       npm run dev
       ```
+> Note: If there issue happen after loging in, try delete `.next` and `node_modules` folders, then run `npm install` in the cmd.   
