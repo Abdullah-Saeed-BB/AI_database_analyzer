@@ -71,10 +71,10 @@ This project uses **PostgreSQL** database. Make sure you have PostgreSQL running
    python -m venv .venv
    pip install -r requirements.txt
    ```
-   - Create a `.env` file and paste the following, just update the `DATABASE_URL` with PostgreSQL database.
+   - Create a `.env` file and paste the following, just update the username and password to PostgreSQL user in `DATABASE_URL`:
  
      ```.env
-     DATABASE_URL="postgresql://[username]:[password]@localhost:5432/[dbname]"
+     DATABASE_URL="postgresql://[username]:[password]@localhost:5432/ai_db_analyzer"
      JWT_SECRET_KEY="YOUR_JWT_SECRET_KEY"
      JWT_ALGORITHM="HS256"
      JWT_ACCESS_TOKEN_EXPIRE_MINUTES=1440
@@ -86,8 +86,17 @@ This project uses **PostgreSQL** database. Make sure you have PostgreSQL running
      ```
 
 4. **Frontend Setup:**
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
+   - Create a `.env.local` in Frontend folder and paste the following:
+  
+      ```.env
+      NEXT_PUBLIC_API_URL=http://localhost:8000
+
+      JWT_SECRET_KEY="YOUR_JWT_SECRET_KEY"
+      JWT_ALGORITHM="HS256"
+      ```
+   - Install the packages and run the application.
+      ```bash
+      cd frontend
+      npm install
+      npm run dev
+      ```
