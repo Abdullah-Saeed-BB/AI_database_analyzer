@@ -1,12 +1,9 @@
 # AI Database Analyzer
 The AI Database Analyzer is an system generate SQL queries, execute them and feed it to the LLM model to analyze the results.
 
-This branch is the local version which run the LLMs locally. If you want to use the LLM API version, please go to the [API branch](https://github.com/M-H-M-H/AI-database-analyzer/tree/api).
+This branch is the local version which run the LLMs locally. If you want to use the LLM API version, please go to the [API-version](https://github.com/Abdullah-Saeed-BB/AI_database_analyzer/tree/API-version) branch.
 
 ## Tools
-
-### 🛠️ Tech Stack
-
 #### Backend
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white)
 ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white)
@@ -75,13 +72,15 @@ This project uses **PostgreSQL** database. Make sure you have PostgreSQL running
    pip install -r requirements.txt
    ```
    - Create a `.env` file and paste the following, just update the `DATABASE_URL` with PostgreSQL database.
+ 
      ```.env
      DATABASE_URL="postgresql://[username]:[password]@localhost:5432/[dbname]"
      JWT_SECRET_KEY="YOUR_JWT_SECRET_KEY"
      JWT_ALGORITHM="HS256"
-     JWT_ACCESS_TOKEN_EXPIRE_MINUTES = 1440
+     JWT_ACCESS_TOKEN_EXPIRE_MINUTES=1440
      ```
    - Run the backend Application:
+
      ```bash
      uvicorn main:app --reload
      ```
