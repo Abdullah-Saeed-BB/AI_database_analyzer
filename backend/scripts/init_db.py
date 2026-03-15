@@ -61,24 +61,6 @@ def create_database_if_not_exists():
             print(f"Database '{target_db}' already exists.")
             created = False
 
-        with Session(engine) as session:
-            query = select(User).where(User.email == "admin@ad.min")
-            admin_user = session.execute(query).scalar()
-            if not admin_user:
-                print("Admin user not found. Creating...")
-                new_user = User(
-                    email="admin@ad.min",
-                    password_hash=hash_password("admin"),
-                    first_name="Admin",
-                    last_name="Admin",
-                    role="admin",
-                )
-                session.add(new_user)
-                session.commit()
-                print("Admin user created successfully.")
-            else: 
-                print("Admin user already exists.")
-
         cursor.close()
         conn.close()
         return created
@@ -98,6 +80,24 @@ def main():
     else:
         print("\nDatabase already exists, skipping population.")
         
+    with Session(engine) as session:
+        query = select(User).where(User.email == "admin@ad.min")
+        admin_user = session.execute(query).scalar()
+        if not admin_user:
+            print("Admin user not found. Creating...")
+            new_user = User(
+                email="admin@ad.min",
+                password_hash=hash_password("admin"),
+                first_name="Admin",
+                last_name="Admin",
+                role="admin",
+            )
+            session.add(new_user)
+            session.commit()
+            print("Admin user created successfully.")
+        else:
+            print("Admin user already exists.")
+
     print("\nInitialization Complete!")
 
 if __name__ == "__main__":
