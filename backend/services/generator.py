@@ -1,31 +1,34 @@
 from sqlalchemy.orm import Session
 
-from ollama import Client
+from openai import OpenAI
 import pandas as pd
 import psycopg2 
 import datetime
 import time
 import re
 import os
-
+from dotenv import load_dotenv
+load_dotenv()
 
 class Generator:
     def __init__(
         self,
         sql_instrc_file="./data/sql_generator_instruction.txt",
         text_instruction="./data/text_instruction.txt",
-        sql_model="onekq/OneSQL-v0.1-Qwen:7B-Q4_K_M",
-        text_model="qwen2.5:1.5b",
-        text_model_options={"temperature": 0.125}
+        model="stepfun/step-3.5-flash:free",
+        text_model_temperature=0.13
     ):
         self.sql_instruction = open(sql_instrc_file).read()
         self.text_instruction = open(text_instruction).read()
 
-        self.sql_model = sql_model
-        self.text_model = text_model
-        self.text_model_options = text_model_options
-
-        self.client = Client(host="http://localhost:11434")        
+        self.model = model
+        self.text_model_temperature = text_model_temperature
+        
+        API_KEY = os.getenv("OPENROUTER_API_KEY")
+        self.client = OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=API_KEY,
+        )
 
     def generate(self, prompt: str, conn: Session) -> str:
         errors = []
@@ -89,16 +92,16 @@ class Generator:
         else:
             instrc = self.sql_instruction
 
-        response = self.client.chat(
-            model=self.sql_model,
+        response = self.client.chat.completions.create(
+            model=self.model,
             messages=[{
                 "role": "system", "content": instrc
             }, {
                 "role": "user", "content": prompt
             }],
-            options={"temperature": 0}
+            temperature=0
         )
-        text = response.message.content
+        text = response.choices[0].message.content
         sql_query = self.extract_sql_from_text(text)
 
         return sql_query
@@ -149,25 +152,26 @@ class Generator:
                 )))
                 return df
             except Exception as e:
+                print("ERROR FROM execute_sql:", e)
                 return e
         else:
             raise Exception("This SQL query doesn't execute SELECT statment query")
 
     def generate_response(self, prompt: str) -> str:
         try:
-            response = self.client.chat(
-                model=self.text_model,
+            response = self.client.chat.completions.create(
+                model=self.model,
                 messages=[{
                     "role": "system", "content": self.text_instruction
                 },{ 
                     "role": "user", "content": prompt
                 }],
-                options=self.text_model_options
+                temperature=self.text_model_temperature
             )
-            text_res = response.message.content
+            text_res = response.choices[0].message.content
 
             return text_res
-        except:
+        except Exception as e:
             print("ERROR GENERATING TEXT RESPONSE:", e)
             return "Something went wrong while generating text response. Sorry :("
 
