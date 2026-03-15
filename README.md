@@ -56,32 +56,29 @@ frontend/
 
 This project uses **PostgreSQL** database. Make sure you have PostgreSQL running on your host machine.
 
-1. **Clone the repository:**
+1. **Checkout the API version branch:**
    ```bash
-   git clone https://github.com/Abdullah-Saeed-BB/AI_database_analyzer.git
+   git checkout API-version
    ```
 
-2. **Prerequisites:** Ensure you have [Ollama](https://ollama.com/) locally installed and working. Make sure to download or verify the required models on your machine:
-   ```bash
-   ollama pull qwen2.5:1.5b
-   ollama pull onekq/OneSQL-v0.1-Qwen:7B-Q4_K_M
-   ```
-   > **Warning:** The `onekq/OneSQL-v0.1-Qwen:7B-Q4_K_M` model size is 4.7GB and `qwen2.5:1.5b` model size is 986MB. Make sure you have enough storage space and RAM.
-
-3. **Backend Setup:**
+2. **Backend Setup:**
    ```bash
    cd backend
    python -m venv .venv
    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
-   - Create a `.env` file in the `backend` folder that accurately defines your PostgreSQL `DATABASE_URL` and backend secrets. No external AI keys are necessary here.
+   - Create a `.env` file in the `backend` folder containing your `OPENROUTER_API_KEY` and you can get it for free in [OpenRouter](https://openrouter.ai/), the PostgreSQL `DATABASE_URL`, and other necessary environment credentials:
+     ```.env
+     DATABASE_URL="postgresql://[username]:[password]@localhost:5432/[dbname]"
+     OPENROUTER_API_KEY="YOUR_OPENROUTER_API_KEY"
+     ```
    - Run the backend Application:
      ```bash
      uvicorn main:app --reload
      ```
 
-4. **Frontend Setup:**
+3. **Frontend Setup:**
    ```bash
    cd frontend
    npm install
