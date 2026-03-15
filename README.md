@@ -100,4 +100,13 @@ This project uses **PostgreSQL** database. Make sure you have PostgreSQL running
       npm install
       npm run dev
       ```
-> Note: If there issue happen after loging in, try delete `.next` and `node_modules` folders, then run `npm install` in the cmd.   
+> Note: If there issue happen after loging in, try delete `.next` and `node_modules` folders, then run `npm install` in the cmd.
+
+If you wanna use other models from Ollama, just go to `backend/src/conversations.py` and apply the following to `generator = Generator()` code:
+```python
+generator = Generator(text_model="YOUR_TEXT_MODEL", sql_model="YOUR_SQL_MODEL")
+```
+
+## Screenshots
+
+
