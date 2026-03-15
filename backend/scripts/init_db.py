@@ -76,7 +76,7 @@ def create_database_if_not_exists():
                 session.add(new_user)
                 session.commit()
                 print("Admin user created successfully.")
-            else:
+            else: 
                 print("Admin user already exists.")
 
         cursor.close()
