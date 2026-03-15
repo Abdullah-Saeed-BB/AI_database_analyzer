@@ -100,3 +100,4 @@ This project uses **PostgreSQL** database. Make sure you have PostgreSQL running
       npm install
       npm run dev
       ```
+> Note: If there issue happen after loging in, try delete `.next` and `node_modules` folders, then run `npm install` in the cmd.   
