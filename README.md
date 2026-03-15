@@ -1,12 +1,9 @@
 # AI Database Analyzer
 The AI Database Analyzer is an system generate SQL queries, execute them and feed it to the LLM model to analyze the results.
 
-This branch is the API version which send request to LLMs host. If you want to use local LLM version, please go to the [API branch](https://github.com/Abdullah-Saeed-BB/AI_database_analyzer).
+This branch is the API version which send request to LLMs host. If you want to use local LLM version, please go to the [Local branch](https://github.com/Abdullah-Saeed-BB/AI_database_analyzer).
 
 ## Tools
-
-### 🛠️ Tech Stack
-
 #### Backend
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white)
 ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white)
@@ -56,8 +53,9 @@ frontend/
 
 This project uses **PostgreSQL** database. Make sure you have PostgreSQL running on your host machine.
 
-1. **Checkout the API version branch:**
+1. **Clone the project and checkout to the API version branch:**
    ```bash
+   git clone https://github.com/Abdullah-Saeed-BB/AI_database_analyzer.git
    git checkout API-version
    ```
 
@@ -65,22 +63,36 @@ This project uses **PostgreSQL** database. Make sure you have PostgreSQL running
    ```bash
    cd backend
    python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
-   - Create a `.env` file in the `backend` folder containing your `OPENROUTER_API_KEY` and you can get it for free in [OpenRouter](https://openrouter.ai/), the PostgreSQL `DATABASE_URL`, and other necessary environment credentials:
+   - Create a `.env` file in the **backend** folder, get the [OpenRouter](https://openrouter.ai/) API Key from their website for free, and update the username and passowrd to PostgreSQL user:
+
      ```.env
-     DATABASE_URL="postgresql://[username]:[password]@localhost:5432/[dbname]"
+     DATABASE_URL="postgresql://[username]:[password]@localhost:5432/ai_db_analyzer"
      OPENROUTER_API_KEY="YOUR_OPENROUTER_API_KEY"
+
+     JWT_SECRET_KEY="YOUR_JWT_SECRET_KEY"
+     JWT_ALGORITHM="HS256"
+     JWT_ACCESS_TOKEN_EXPIRE_MINUTES=1440
      ```
    - Run the backend Application:
+
      ```bash
      uvicorn main:app --reload
      ```
 
 3. **Frontend Setup:**
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
+   - Create a `.env.local` in Frontend folder and paste the following:
+  
+      ```.env
+      NEXT_PUBLIC_API_URL=http://localhost:8000
+
+      JWT_SECRET_KEY="YOUR_JWT_SECRET_KEY"
+      JWT_ALGORITHM="HS256"
+      ```
+   - Install the packages and run the application.
+      ```bash
+      cd frontend
+      npm install
+      npm run dev
+      ```
