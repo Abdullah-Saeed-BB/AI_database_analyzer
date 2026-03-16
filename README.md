@@ -98,3 +98,11 @@ This project uses **PostgreSQL** database. Make sure you have PostgreSQL running
       npm run dev
       ```
 > Note: If there issue happen after loging in, try delete `.next` and `node_modules` folders, then run `npm install` in the cmd.   
+
+If you wanna use other models in OpenRouter, just go to `backend/src/conversations.py` and apply the following to `generator = Generator()` code:
+```python
+generator = Generator(model="YOUR_MODEL")
+```
+
+## Screenshots
+
