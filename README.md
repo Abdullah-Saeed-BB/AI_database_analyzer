@@ -107,6 +107,3 @@ If you wanna use other models from Ollama, just go to `backend/src/conversations
 generator = Generator(text_model="YOUR_TEXT_MODEL", sql_model="YOUR_SQL_MODEL")
 ```
 
-## Screenshots
-
-
