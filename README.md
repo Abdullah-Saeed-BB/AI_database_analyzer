@@ -103,6 +103,3 @@ If you wanna use other models in OpenRouter, just go to `backend/src/conversatio
 ```python
 generator = Generator(model="YOUR_MODEL")
 ```
-
-## Screenshots
-
