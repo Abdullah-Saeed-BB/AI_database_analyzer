@@ -145,15 +145,17 @@ class Generator:
 
     def execute_sql(self, sql: str, conn: Session) -> pd.DataFrame:
         if sql.lower().strip().startswith("select"):
-            try:
-                df = pd.read_sql(sql, conn)
-                df.rename(inplace=True, columns=dict(map(
-                    lambda col: (col, col.replace(".", "_")), df.columns
-                )))
-                return df
-            except Exception as e:
-                print("ERROR FROM execute_sql:", e)
-                return e
+            for i in range(2):
+                try:
+                    df = pd.read_sql(sql, conn)
+                    df.rename(inplace=True, columns=dict(map(
+                        lambda col: (col, col.replace(".", "_")), df.columns
+                    )))
+                    return df
+                except Exception as e:
+                    err = e
+                    sql = re.sub(r'(?<!%)%(?!%)', '%%', sql)
+            raise err
         else:
             raise Exception("This SQL query doesn't execute SELECT statment query")
 
