@@ -32,6 +32,7 @@ class Generator:
 
         sql_start_time = time.time()
         sql_query = self.generate_sql(prompt)
+        print("SQL Query: ", sql_query)
 
         i = 0
         while True:
@@ -41,9 +42,11 @@ class Generator:
             if isinstance(df, pd.DataFrame):
                 break
             else:
+                print("Error:", df)
                 if i >= 3:
                     raise Exception(f"Error happen while executing the SQL query. Please try again.")
                 sql_query = self.generate_sql(sql_query, error=df)
+                print("2. SQL Query: ", sql_query)
         sql_generation_time = time.time() - sql_start_time
 
         text_start_time = time.time()
@@ -85,7 +88,7 @@ class Generator:
 
     def generate_sql(self, prompt: str, error=None) -> str:
         if error:
-            instrc = f"Fix this error: {error}\n\nSQL command:"
+            instrc = f"Fix this error in the SQL query: {error}. Return only the SQL command without any explanation."
         else:
             instrc = self.sql_instruction
 
@@ -142,14 +145,17 @@ class Generator:
 
     def execute_sql(self, sql: str, conn: Session) -> pd.DataFrame:
         if sql.lower().strip().startswith("select"):
-            try:
-                df = pd.read_sql(sql, conn)
-                df.rename(inplace=True, columns=dict(map(
-                    lambda col: (col, col.replace(".", "_")), df.columns
-                )))
-                return df
-            except Exception as e:
-                return e
+            for i in range(2):
+                try:
+                    df = pd.read_sql(sql, conn)
+                    df.rename(inplace=True, columns=dict(map(
+                        lambda col: (col, col.replace(".", "_")), df.columns
+                    )))
+                    return df
+                except Exception as e:
+                    err = e
+                    sql = re.sub(r'(?<!%)%(?!%)', '%%', sql)
+            raise err
         else:
             raise Exception("This SQL query doesn't execute SELECT statment query")
 
